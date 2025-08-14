@@ -1,0 +1,30 @@
+Flask==2.3.2
+
+# Vector DB & Embeddings
+faiss-cpu
+sentence-transformers
+
+# LangChain core packages
+langchain
+langchain-community
+langchain-core
+langchain-google-genai
+langchain-groq
+langchain-text-splitters
+
+# Async handling
+nest-asyncio
+
+# Google GenAI APIs
+google-ai-generativelanguage
+google-generativeai
+
+# File parsing
+PyPDF2
+python-docx
+pandas
+beautifulsoup4
+requests
+
+# Env handling
+python-dotenv
