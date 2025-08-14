@@ -3,3 +3,5 @@
 
 # files that have api keys
 .env
+
+/__pycache__
