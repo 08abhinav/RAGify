@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000; /* Black track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333; /* Dark gray thumb */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Lighter on hover */
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #333 #000;
+}
+
+body {
+  @apply bg-gradient-to-br from-black via-gray-900 to-black text-gray-300;
+  min-height: 100vh;
+}
