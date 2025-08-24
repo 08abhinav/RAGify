@@ -4,9 +4,8 @@ from routes import register_routes
 
 app = FastAPI(title="RAGify")
 
-# CORS setup
 origins = [
-    "http://localhost:5173",  # your frontend URL
+    "http://localhost:5173", 
 ]
 
 app.add_middleware(
@@ -18,7 +17,3 @@ app.add_middleware(
 )
 
 register_routes(app)
-
-# ✅ No app.run here
-# You run it with uvicorn:
-# uvicorn main:app --reload --host 0.0.0.0 --port 8000
