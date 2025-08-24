@@ -17,7 +17,7 @@ export const Explore = () => {
         
         <p className='max-w-3xl text-lg md:text-xl text-gray-400'>
           Upload your <span className="text-white font-semibold">PDFs, DOCs, CSVs, or URLs </span>  
-          and let <span className="text-indigo-400 font-semibold">AI powered by Google Gemini</span>  
+          and let <span className="text-indigo-400 font-semibold">AI powered by Google Gemini </span>  
           summarize, answer questions, and give you actionable insights instantly.
         </p>
       </div>
