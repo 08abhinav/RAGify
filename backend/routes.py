@@ -29,11 +29,11 @@ def register_routes(app):
                 return JSONResponse(content={"error": "No file or URL provided"}, status_code=400)
 
             if file.filename.endswith(".pdf"):
-                vectorstore = process_pdf(file)
+                vectorstore = process_pdf(file, doc_id)
             elif file.filename.endswith(".csv"):
-                vectorstore = process_csv(file)
+                vectorstore = process_csv(file, doc_id)
             elif file.filename.endswith(".docx"):
-                vectorstore = process_doc(file)
+                vectorstore = process_doc(file, doc_id)
             else:
                 return JSONResponse(content={"error": "Unsupported file type"}, status_code=400)
 
