@@ -1,30 +1,32 @@
 import os
 from qdrant_client import QdrantClient
 from langchain_qdrant import Qdrant
-from langchain_community.embeddings import HuggingFaceBgeEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
 QDRANT_URL = os.getenv("QDRANT_URL")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 
-embeddings = HuggingFaceBgeEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-
 qdrant_client = QdrantClient(
     url=QDRANT_URL,
-    api_key=QDRANT_API_KEY
+    api_key=QDRANT_API_KEY,
 )
 
-def save_vectors(chunks, doc_id):
-    collection_name = "RAGify"
+embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
+def save_vectors(chunks, doc_id):
+    for chunk in chunks:
+        chunk.metadata["doc_id"] = doc_id
+
+    collection_name = "RAGify"
     vectorstore = Qdrant.from_documents(
-        documents=chunks,
+        chunks,
         embedding=embeddings,
-        url=QDRANT_URL,
+        url=QDRANT_URL, 
         api_key=QDRANT_API_KEY,
         collection_name=collection_name
     )
-
     return vectorstore
+
 
 def load_vector(doc_id):
     collection_name = "RAGify"
@@ -32,13 +34,11 @@ def load_vector(doc_id):
     vectorstore = Qdrant(
         client=qdrant_client,
         collection_name=collection_name,
-        embeddings=embeddings
+        embedding=embeddings
     )
 
     retriever = vectorstore.as_retriever(
-        search_kwargs={
-            "k": 5,
-            "filter":{"must":[{"key": "doc_id", "match": {"value": doc_id}}]}
-        }
+        search_kwargs={"k": 5},
+        filter={"must": [{"key": "doc_id", "match": {"value": doc_id}}]}
     )
     return retriever
