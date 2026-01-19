@@ -16,7 +16,7 @@ A lightweight **Retrieval-Augmented Generation (RAG) application** built with **
 
 ## 🛠️ Tech Stack
 
-* **Backend**: Flask
+* **Backend**: FastAPI
 * **LLM**: Google Gemini (`langchain-google-genai`)
 * **Vector DB**: FAISS
 * **Framework**: LangChain (document loaders, splitters, retrievers)
