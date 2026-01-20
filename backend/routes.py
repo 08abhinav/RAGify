@@ -9,6 +9,7 @@ from controllers.doc_controller import process_doc
 from controllers.web_controller import process_web
 from controllers.process_query import process_query
 from state import save_vectors, load_vector
+from lib.validateFile import validate_file_size
 
 
 def register_routes(app):
@@ -27,6 +28,9 @@ def register_routes(app):
             # Case 2: File upload
             if not file:
                 return JSONResponse(content={"error": "No file or URL provided"}, status_code=400)
+
+            # Case 3: Uploaded file exceeds 10MB limit
+            validate_file_size(file)
 
             if file.filename.endswith(".pdf"):
                 vectorstore = process_pdf(file, doc_id)
