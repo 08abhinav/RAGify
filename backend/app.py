@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import register_routes
+from routes.routes import register_routes
 
 app = FastAPI(title="RAGify")
 
