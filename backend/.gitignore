@@ -1,8 +1,0 @@
-# virtual environment
-/env
-
-# files that have api keys
-.env
-
-**/*__pycache__
-**/*vector_dbs
