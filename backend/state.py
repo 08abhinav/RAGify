@@ -1,44 +1,64 @@
 import os
-from qdrant_client import QdrantClient
-from langchain_qdrant import Qdrant
+import chromadb
+from typing import List
+from dotenv import load_dotenv
+from langchain_core.documents import Document
 from langchain_huggingface import HuggingFaceEmbeddings
 
-QDRANT_URL = os.getenv("QDRANT_URL")
-QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
+load_dotenv() 
 
-qdrant_client = QdrantClient(
-    url=QDRANT_URL,
-    api_key=QDRANT_API_KEY,
+embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2"
 )
 
-embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+client = chromadb.CloudClient(
+  api_key=os.getenv("CHROMA_API_KEY"),
+  tenant=os.getenv("CHROMA_TENANT"),
+  database=os.getenv("CHROMA_DATABASE")
+)
 
-def save_vectors(chunks, doc_id):
-    for chunk in chunks:
-        chunk.metadata["doc_id"] = doc_id
+COLLECTION_NAME = os.getenv("CHROMA_COLLECTION")
 
-    collection_name = "RAGify"
-    vectorstore = Qdrant.from_documents(
-        chunks,
-        embedding=embeddings,
-        url=QDRANT_URL, 
-        api_key=QDRANT_API_KEY,
-        collection_name=collection_name
+collection = client.get_or_create_collection(
+    name=COLLECTION_NAME
+)
+
+def save_vectors(chunks: List[Document], doc_id: str) -> None:
+    """
+    chunks: List[LangChain Document]
+    doc_id: UUID string
+    """
+
+    ids = []
+    documents = []
+    metadatas = []
+
+    for i, chunk in enumerate(chunks):
+        ids.append(f"{doc_id}_{i}")
+        documents.append(chunk.page_content)
+
+        metadata = dict(chunk.metadata) if chunk.metadata else {}
+        metadata["doc_id"] = doc_id
+        metadatas.append(metadata)
+
+    collection.add(
+        ids=ids,
+        documents=documents,
+        metadatas=metadatas
     )
-    return vectorstore
 
 
-def load_vector(doc_id):
-    collection_name = "RAGify"
+def load_vector(query: str, doc_id: str, k: int = 5):
+    """
+    Returns top-k chunks for a query scoped to a document
+    """
 
-    vectorstore = Qdrant(
-        client=qdrant_client,
-        collection_name=collection_name,
-        embedding=embeddings
+    query_embedding = embeddings.embed_query(query)
+
+    results = collection.query(
+        query_embeddings=[query_embedding],
+        n_results=k,
+        where={"doc_id": doc_id}
     )
 
-    retriever = vectorstore.as_retriever(
-        search_kwargs={"k": 5},
-        filter={"must": [{"key": "doc_id", "match": {"value": doc_id}}]}
-    )
-    return retriever
+    return results
