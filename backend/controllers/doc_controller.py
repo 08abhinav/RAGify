@@ -1,12 +1,12 @@
 import tempfile
 from fastapi import UploadFile, HTTPException
 from langchain_community.document_loaders import Docx2txtLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from state import save_vectors
 
 def process_doc(file: UploadFile, doc_id: str):
     try:
-        # Save uploaded file to a temp .docx
+        # Save uploadedfile temporarily
         with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as temp_file:
             content = file.file.read()
             temp_file.write(content)
@@ -25,10 +25,7 @@ def process_doc(file: UploadFile, doc_id: str):
         for chunk in chunks:
             chunk.metadata["doc_id"] = doc_id
 
-        # Save into Qdrant Cloud
-        save_vectors(chunks, doc_id)
-
-        return True
+        return chunks
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
