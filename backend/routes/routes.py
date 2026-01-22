@@ -1,7 +1,8 @@
 import uuid
+from fastapi import Request
+from pydantic import BaseModel
 from fastapi import UploadFile, Form, File
 from fastapi.responses import JSONResponse
-from fastapi import Request
 
 from controllers.pdf_controller import process_pdf
 from controllers.csv_controller import process_csv
@@ -11,9 +12,13 @@ from controllers.process_query import process_query
 from lib.state import save_vectors, load_vector
 from lib.validateFile import validate_file_size
 
+class AskRequest(BaseModel):
+    query: str
+    doc_id: str
+
 
 def register_routes(app):
-    @app.post("/upload")
+    @app.post("/api/upload")
     async def upload_file(file: UploadFile = File(None), url: str = Form(None)):
         try:
             doc_id = str(uuid.uuid4())
@@ -47,19 +52,19 @@ def register_routes(app):
         except Exception as e:
             return JSONResponse(content={"error": str(e)}, status_code=500)
 
-    @app.post("/ask")
-    async def ask_question(request: Request):
+    @app.post("/api/ask")
+    async def ask_question(request: AskRequest):
         try:
-            data = await request.json()
-            query = data.get("query")
-            doc_id = data.get("doc_id")
+            query = request.query
+            doc_id = request.doc_id
 
-            if not query or not doc_id:
-                return JSONResponse(content={"error": "Both query and doc_id are required"}, status_code=400)
+            vectorstore = load_vector(query=query, doc_id=doc_id)
 
-            vectorstore = load_vector(doc_id)
-            if not vectorstore:
-                return JSONResponse(content={"error": "No document found for this doc_id"}, status_code=404)
+            if not vectorstore or not vectorstore.get("documents"):
+                return JSONResponse(
+                    content={"error": "No document found for this doc_id"},
+                    status_code=404
+                )
 
             answer = process_query(query, vectorstore)
             return JSONResponse(content=answer)
