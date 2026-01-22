@@ -32,23 +32,25 @@ This backend is designed to be **simple, local-first, and production-ready**.
 ---
 
 ## 📂 Project Structure (Backend)
+```text
 backend/
 │
-├── app.py 
+├── app.py
+│
 ├── routes/
-│ ├── routes.py 
+│   └── routes.py
 │
 ├── controllers/
-│ ├── csv_controller.py 
-│ ├── doc_controller.py
-│ ├── pdf_controller.py
-│ ├── web_controller.py
-│ └── process_query.py
+│   ├── csv_controller.py
+│   ├── doc_controller.py
+│   ├── pdf_controller.py
+│   ├── web_controller.py
+│   └── process_query.py
+│
 ├── lib/
-|  ├── state.py
-│  └── validateFile.py
-
-
+│   ├── state.py
+│   └── validateFile.py
+```
 ---
 
 ## ⚙️ Setup Instructions (Backend Only)
@@ -60,7 +62,7 @@ git clone https://github.com/08abhinav/RAGify.git
 cd backend
 ```
 
-## Crate and Active Virtual Environment
+## Create and Activate Virtual Environment
 
 ```bash
 python -m venv venv
@@ -77,3 +79,8 @@ pip install -r requirements.txt
 ```bash
 uvicorn app:app --reload
 ```
+
+## Access the API
+
+- Server: http://localhost:8000
+- Swagger UI: http://localhost:8000/docs
