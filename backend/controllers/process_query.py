@@ -1,51 +1,47 @@
-from langchain_core.prompts import PromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_classic.chains.combine_documents.stuff import create_stuff_documents_chain
-from langchain_classic.chains.retrieval_qa.base import RetrievalQA
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_ollama import ChatOllama
 
-def process_query(query: str, vectorstore):
+def process_query(query: str, chroma_results: dict):
     try:
-        retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
+        documents = chroma_results.get("documents", [[]])[0]
 
-        llm = ChatGoogleGenerativeAI(
-            model="gemini-2.5-pro",
+        if not documents:
+            return {
+                "answer": "I could not find that information in the provided document."
+            }
+
+        context = "\n\n".join(documents)
+
+        llm = ChatOllama(
+            model="tinyllama",
             temperature=0.3
         )
 
-        prompt = PromptTemplate(
-            input_variables=["context", "input"],
-            template="""
-                You are an expert assistant answering questions strictly based on the given context.
-
-                --- CONTEXT START ---
+        prompt = ChatPromptTemplate.from_messages([
+            ("system",
+             "You are an expert assistant answering questions strictly based on the given context. "
+             "Use only the context. If not found, say exactly: "
+             "'I could not find that information in the provided document.'"),
+            
+            ("human",
+             """--- CONTEXT START ---
                 {context}
                 --- CONTEXT END ---
 
-                Question: {input}
+                Question: {question}
 
-                Rules:
-                - Use only the context
-                - If numerical or factual data is provided, state it exactly as in the source.
-                - If there are multiple possible answers, list them briefly.
-                - After giving the answer, add a short 1-2 line summary of what the user asked.
-                - If not found, say: "I could not find that information in the provided document."
-            """
-        )
+                Answer concisely. End with a 1–2 line summary of the question."""
+            )
+        ])
 
-        document_chain = create_stuff_documents_chain(
-            llm=llm,
-            prompt=prompt
-        )
+        chain = prompt | llm
 
-        retrieval_chain = RetrievalQA.from_chain_type(
-            llm=llm,
-            chain_type="stuff",
-            retriever=retriever,
-            chain_type_kwargs={"prompt": prompt}
-        )
+        response = chain.invoke({
+            "context": context,
+            "question": query
+        })
 
-        result = retrieval_chain.run(query)
-        return {"answer": result}
+        return {"answer": response.content}
 
     except Exception as e:
         return {"error": str(e)}
