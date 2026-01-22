@@ -2,7 +2,6 @@ import tempfile
 from fastapi.responses import JSONResponse
 from langchain_community.document_loaders import CSVLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from state import save_vectors
 
 def process_csv(file, doc_id):
     try:

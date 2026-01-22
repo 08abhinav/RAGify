@@ -2,7 +2,6 @@ import tempfile
 from fastapi import UploadFile, HTTPException
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from state import save_vectors
 
 def process_pdf(file: UploadFile, doc_id: str):
     try:

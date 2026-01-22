@@ -2,7 +2,6 @@ import tempfile
 from fastapi import UploadFile, HTTPException
 from langchain_community.document_loaders import Docx2txtLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from state import save_vectors
 
 def process_doc(file: UploadFile, doc_id: str):
     try:
