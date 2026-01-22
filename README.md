@@ -1,35 +1,79 @@
-# 📘 RAGify
+# 📘 RAGify – Backend
 
-A lightweight **Retrieval-Augmented Generation (RAG) application** built with **Python**, allowing users to upload documents (PDF, DOCX, CSV, Web URL) and query them using natural language.
+A lightweight **Retrieval-Augmented Generation (RAG) backend** built with **Python + FastAPI**.  
+It allows users to upload documents (PDF, DOCX, CSV, or Web URLs), store embeddings in a vector database, and ask natural-language questions over their own data.
 
----
-
-## 🚀 Features
-
-* Upload documents (PDF, DOCX, CSV) or fetch content from URLs
-* Store embeddings in a **ChromaDB vector database** (persistent on disk)
-* Retrieve document-specific answers using **Google Gemini**
-* Support for **multiple documents** via unique `doc_id`
-* REST API powered by **FastAPI**
-* Frontend built with **React** for interactive user interface
-* Powered by **LangChain** for document loaders, splitters, and retrieval
+This backend is designed to be **simple, local-first, and production-ready**.
 
 ---
 
-## 🛠️ Tech Stack
+## 🚀 Backend Features
 
-* **Programming Language**: Python
-* **Backend Framework**: FastAPI
-* **Frontend Framework**: React
-* **LLM**: Google Gemini (`langchain-google-genai`)
-* **Vector Database**: ChromaDB
-* **Framework for RAG**: LangChain (document loaders, splitters, retrievers)
+- Upload documents (**PDF, DOCX, CSV**) or ingest content from **URLs**
+- Generate embeddings and store them in **ChromaDB**
+- Query documents using **local LLM (Ollama + TinyLlama)**
+- Support for **multiple documents** via unique `doc_id`
+- REST APIs powered by **FastAPI**
+- Uses **LangChain** for loaders, splitters, retrievers, and chains
+- Fully **offline-capable** once models are installed
 
 ---
 
-## ⚡ Usage
+## 🛠️ Backend Tech Stack
 
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
+- **Language**: Python
+- **API Framework**: FastAPI
+- **RAG Framework**: LangChain
+- **Vector Database**: ChromaDB
+- **LLM Runtime**: Ollama (local)
+- **LLM Model**: TinyLlama
+- **Embedding Flow**: LangChain Embeddings + Chroma
+
+---
+
+## 📂 Project Structure (Backend)
+backend/
+│
+├── app.py 
+├── routes/
+│ ├── routes.py 
+│
+├── controllers/
+│ ├── csv_controller.py 
+│ ├── doc_controller.py
+│ ├── pdf_controller.py
+│ ├── web_controller.py
+│ └── process_query.py
+├── lib/
+|  ├── state.py
+│  └── validateFile.py
+
+
+---
+
+## ⚙️ Setup Instructions (Backend Only)
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/08abhinav/RAGify.git 
+cd backend
+```
+
+## Crate and Active Virtual Environment
+
+```bash
+python -m venv venv
+source venv/Scripts/activate
+```
+## Install Python dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+## Run backend
+
+```bash
+uvicorn app:app --reload
+```
