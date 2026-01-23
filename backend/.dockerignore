@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv
+venv/
+env/
+
+# Git
+.git/
+.gitignore
+
+# Node (if present)
+node_modules/
+
+# Data & ML junk
+*.pdf
+*.csv
+*.json
+data/
+datasets/
+embeddings/
+faiss_index/
+
+# OS
+.DS_Store
+but 
