@@ -10,7 +10,6 @@ export const Rag = () => {
   const [answer, setAnswer] = useState("")
   const [loading, setLoading] = useState(false)
 
-  // Handle file upload
   const handleUpload = async () => {
     if (!file) {
       toast.error("Please select a file first")
@@ -21,7 +20,7 @@ export const Rag = () => {
     formData.append("file", file)
 
     try {
-      const res = await axios.post("http://127.0.0.1:5000/upload", formData, {
+      const res = await axios.post("http://127.0.0.1:8000/api/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       if (res.status === 200) {
@@ -34,16 +33,15 @@ export const Rag = () => {
     }
   }
 
-  // Handle query
   const handleAsk = async () => {
     if (!docId) {
       toast.error("Upload file first")
       return
     }
-
+    
     setLoading(true)
     try {
-      const res = await axios.post("http://127.0.0.1:5000/ask", {
+      const res = await axios.post("http://127.0.0.1:8000/api/ask", {
         doc_id: docId,
         query,
       })
