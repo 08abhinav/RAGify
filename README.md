@@ -17,7 +17,7 @@ This backend is designed to be **simple, local-first, and production-ready**.
 - Uses **LangChain** for loaders, splitters, retrievers, and chains
 - Fully **offline-capable** once models are installed
 
-## rontend Features
+## Frontend Features
 
 - Ask natural-language questions over uploaded documents
 - Real-time answers powered by the RAG backend
