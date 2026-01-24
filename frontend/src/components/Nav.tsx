@@ -1,19 +1,24 @@
-import { HeaderLogo } from './HeaderLogo'
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Sparkles } from "lucide-react";
 
 export const Nav = () => {
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 
-      bg-gradient-to-r from-gray-800 via-black to-gray-900 
-      backdrop-blur-lg bg-opacity-90 shadow-lg border-b border-gray-800">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Logo */}
-        <HeaderLogo />
-        <div className="hidden md:flex items-center gap-8 text-gray-300 font-medium">
-        <Link to="/" className="hover:text-blue-400 transition">Home</Link>
-        <Link to="/" className="hover:text-blue-400 transition">About</Link>
+    <motion.nav
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="flex items-center justify-between px-6 md:px-12 py-5 border-b border-border/30 backdrop-blur-sm bg-background/50 sticky top-0 z-50"
+    >
+      <Link to="/" className="flex items-center gap-2 group">
+        <div className="relative">
+          <div className="absolute inset-0 bg-primary/30 blur-xl rounded-full animate-pulse-glow" />
+          <Sparkles className="w-7 h-7 text-primary relative z-10" />
         </div>
-      </div>
-    </nav>
-  )
-}
+        <span className="text-xl font-bold font-display gradient-text">
+          RAGify
+        </span>
+      </Link>
+    </motion.nav>
+  );
+};
