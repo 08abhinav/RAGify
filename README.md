@@ -122,19 +122,17 @@ uvicorn app:app --reload
 
 ## Setup Instructions (Frontend Only)
 
-### Clone the Repository
-
 ```bash
-cd backend
+cd frontend
 ```
 
-## Install Python dependencies
+## Install React dependencies
 
 ```bash
 npm i
 ```
 
-## Run backend
+## Run frontend
 
 ```bash
 npm run dev
