@@ -3,7 +3,7 @@
 A lightweight **Retrieval-Augmented Generation (RAG) ** built with **Python + FastAPI and React.js**.  
 It allows users to upload documents (PDF, DOCX, CSV, or Web URLs), store embeddings in a vector database, and ask natural-language questions over their own data.
 
-This backend is designed to be **simple, local-first, and production-ready**.
+This backend is designed to be **simple and local-first**.
 
 ---
 
