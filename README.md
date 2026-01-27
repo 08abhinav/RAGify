@@ -66,13 +66,17 @@ frontend/
 │
 ├── src/
 │   ├── components/
+|   |   ├── HeaderLogo.tsx
 │   │   ├── Nav.tsx
 │   │   └── ui/
-│   │       └── button.tsx
+|   |       ├── button.tsx
+│   │       └── input.tsx
 │   │
 │   ├── pages/
+|   |   ├── Explore.tsx
 │   │   ├── Home.tsx
-│   │   ├── Explore.tsx
+│   │   ├── Index.tsx
+|   |   ├── NotFound.tsx
 │   │   └── Rag.tsx
 │   │
 │   ├── utils/
