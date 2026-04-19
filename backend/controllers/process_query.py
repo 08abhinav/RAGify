@@ -10,11 +10,12 @@ def process_query(query: str, chroma_results: dict):
                 "answer": "I could not find that information in the provided document."
             }
 
-        context = "\n\n".join(documents)
+        context = "\n\n".join(documents[:3])
 
         llm = ChatOllama(
             model="tinyllama",
-            temperature=0.3
+            temperature=0.3,
+            timeout=60
         )
 
         prompt = ChatPromptTemplate.from_messages([
