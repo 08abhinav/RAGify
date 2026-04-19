@@ -11,40 +11,36 @@ embeddings = HuggingFaceEmbeddings(
     model_name="sentence-transformers/all-MiniLM-L6-v2"
 )
 
-client = chromadb.CloudClient(
-  api_key=os.getenv("CHROMA_API_KEY"),
-  tenant=os.getenv("CHROMA_TENANT"),
-  database=os.getenv("CHROMA_DATABASE")
-)
+chroma_client = chromadb.HttpClient(host='localhost', port=8000)
+chroma_client.heartbeat()
 
 COLLECTION_NAME = os.getenv("CHROMA_COLLECTION")
 
-collection = client.get_or_create_collection(
-    name=COLLECTION_NAME
+collection = chroma_client.get_or_create_collection(
+    name=COLLECTION_NAME,
+    metadata={"hnsw:space": "cosine"}
 )
 
 def save_vectors(chunks: List[Document], doc_id: str) -> None:
-    """
-    chunks: List[LangChain Document]
-    doc_id: UUID string
-    """
-
     ids = []
-    documents = []
+    texts = []
     metadatas = []
 
     for i, chunk in enumerate(chunks):
         ids.append(f"{doc_id}_{i}")
-        documents.append(chunk.page_content)
+        texts.append(chunk.page_content)
 
         metadata = dict(chunk.metadata) if chunk.metadata else {}
         metadata["doc_id"] = doc_id
         metadatas.append(metadata)
 
+    vectors = embeddings.embed_documents(texts)
+
     collection.add(
         ids=ids,
-        documents=documents,
-        metadatas=metadatas
+        documents=texts,
+        metadatas=metadatas,
+        embeddings=vectors
     )
 
 
