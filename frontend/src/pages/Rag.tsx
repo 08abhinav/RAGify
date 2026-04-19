@@ -2,6 +2,13 @@ import { useState } from "react"
 import axios from "axios"
 import { Nav } from "@/components/Nav"
 import { toast } from "react-toastify"
+import { Upload, Send, FileText, Sparkles } from "lucide-react"
+
+const steps = [
+  "Searching your document...",
+  "Extracting relevant context...",
+  "Generating grounded answer..."
+]
 
 export const Rag = () => {
   const [file, setFile] = useState<File | null>(null)
@@ -9,10 +16,11 @@ export const Rag = () => {
   const [query, setQuery] = useState("")
   const [answer, setAnswer] = useState("")
   const [loading, setLoading] = useState(false)
+  const [stepIndex, setStepIndex] = useState(0)
 
   const handleUpload = async () => {
     if (!file) {
-      toast.error("Please select a file first")
+      toast.error("Select a file first")
       return
     }
 
@@ -20,104 +28,149 @@ export const Rag = () => {
     formData.append("file", file)
 
     try {
-      const res = await axios.post("http://127.0.0.1:8000/api/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const res = await axios.post("http://127.0.0.1:8080/api/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
       })
+
       if (res.status === 200) {
         setDocId(res.data.doc_id)
-        toast.success("File uploaded successfully!")
+        toast.success("Document ready for exploration")
       }
     } catch (err) {
-      console.error(err)
       toast.error("Upload failed")
     }
   }
 
   const handleAsk = async () => {
     if (!docId) {
-      toast.error("Upload file first")
+      toast.error("Upload a document first")
       return
     }
-    
+
+    if (!query.trim()) return
+
     setLoading(true)
+    setAnswer("")
+    setStepIndex(0)
+
+    let interval: any
+
     try {
-      const res = await axios.post("http://127.0.0.1:8000/api/ask", {
+      interval = setInterval(() => {
+        setStepIndex(prev => (prev + 1) % steps.length)
+      }, 1000)
+
+      const res = await axios.post("http://127.0.0.1:8080/api/ask", {
         doc_id: docId,
-        query,
+        query
       })
+
       if (res.status === 200) {
         setAnswer(res.data.answer)
-        toast.success("Got the answer!")
+        toast.success("Answer ready")
       }
     } catch (err) {
-      console.error(err)
-      toast.error("Query failed")
+      toast.error("Failed to get answer")
     } finally {
+      clearInterval(interval)
       setLoading(false)
     }
   }
 
   return (
-    <>
+    <div className="relative min-h-screen overflow-hidden bg-[#05060a] text-gray-200">
+      {/* background glow */}
+      <div className="absolute top-[-120px] left-[-120px] w-[400px] h-[400px] bg-indigo-600/20 rounded-full blur-[130px]" />
+      <div className="absolute bottom-[-120px] right-[-120px] w-[400px] h-[400px] bg-cyan-500/20 rounded-full blur-[140px]" />
+
       <Nav />
-      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-gray-200 px-6 py-28">
-        <div className="max-w-3xl mx-auto space-y-10">
-          {/* Upload Section */}
-          <div className="bg-gray-800/40 p-6 rounded-2xl shadow-lg">
-            <h2 className="text-2xl font-bold text-gray-200 mb-4 font-serif">📂 Start Uploading</h2>
-            <p className="text-gray-400 mb-4">
-              Upload your PDF, DOCX, or CSV file to begin exploring it with AI.
-            </p>
-            <div className="flex items-center gap-4">
-              <input
-                type="file"
-                accept=".pdf,.docx,.csv"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
-                className="block text-gray-300 file:mr-4 file:py-2 file:px-4 
-                           file:rounded-lg file:border-0 
-                           file:bg-blue-600 file:text-white 
-                           hover:file:bg-blue-700 hover:cursor-pointer"
-              />
-              <button
-                onClick={handleUpload}
-                className="px-5 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg hover:cursor-pointer"
-              >
-                Upload
-              </button>
-            </div>
+
+      <div className="max-w-5xl mx-auto px-6 py-28 space-y-10">
+        {/* HEADER */}
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2 text-indigo-300 mb-3">
+            <Sparkles className="w-5 h-5" />
+            <span className="text-sm uppercase tracking-widest">Workspace</span>
           </div>
 
-          {/* Query Section */}
-          <div className="bg-gray-800/40 p-6 rounded-2xl shadow-lg">
-            <h2 className="text-2xl font-bold text-gray-300 mb-4">🤖 Ask Your Document</h2>
-            {!docId ? (
-              <p className="text-gray-500">Upload a file first to unlock this section.</p>
-            ) : (
-              <>
-                <textarea
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Ask a question about your document..."
-                  className="w-full h-28 p-3 border border-gray-600 rounded-lg bg-gray-900 text-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 mb-4"
-                />
-                <button
-                  onClick={handleAsk}
-                  disabled={loading}
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50"
-                >
-                  {loading ? "Thinking..." : "Ask"}
-                </button>
-                {answer && (
-                  <div className="mt-6 p-4 border border-gray-700 rounded-lg bg-gray-900/70 text-gray-200">
-                    <strong className="text-green-400">Answer:</strong>
-                    <p className="mt-2">{answer}</p>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+          <h1 className="text-5xl md:text-6xl font-extrabold text-white">
+            Chat with your <span className="bg-gradient-to-r from-indigo-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">documents</span>
+          </h1>
+
+          <p className="text-gray-400 mt-4">
+            Upload a file and ask questions like you would ask a human expert.
+          </p>
         </div>
+
+        {/* UPLOAD CARD */}
+        <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-6 shadow-xl">
+          <div className="flex items-center gap-2 mb-4 text-white">
+            <Upload className="w-5 h-5 text-indigo-300" />
+            <h2 className="text-xl font-semibold">Upload Document</h2>
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-4 items-center">
+            <input
+              type="file"
+              accept=".pdf,.docx,.csv"
+              onChange={e => setFile(e.target.files?.[0] || null)}
+              className="text-gray-300 file:mr-4 file:px-4 file:py-2 file:rounded-lg file:border-0 file:bg-indigo-600 file:text-white hover:file:bg-indigo-500"
+            />
+
+            <button
+              onClick={handleUpload}
+              className="px-6 py-2 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 text-white hover:scale-105 transition-all cursor-pointer"
+            >
+              Upload
+            </button>
+          </div>
+
+          {docId && (
+            <p className="text-green-400 mt-3 text-sm">
+              Document ready
+            </p>
+          )}
+        </div>
+
+        {/* QUERY CARD */}
+        <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-6 shadow-xl">
+          <div className="flex items-center gap-2 mb-4 text-white">
+            <FileText className="w-5 h-5 text-cyan-300" />
+            <h2 className="text-xl font-semibold">Ask Anything</h2>
+          </div>
+
+          <textarea
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Ask something from your document..."
+            className="w-full h-28 p-4 rounded-xl bg-black/40 border border-white/10 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            disabled={!docId}
+          />
+
+          <button
+            onClick={handleAsk}
+            disabled={loading || !docId}
+            className="mt-4 flex items-center gap-2 px-6 py-2 rounded-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 transition-all"
+          >
+            <Send className="w-4 h-4" />
+            {loading ? steps[stepIndex] : "Ask"}
+          </button>
+
+          {loading && (
+            <div className="mt-4 text-indigo-300 animate-pulse">
+              {steps[stepIndex]}
+            </div>
+          )}
+        </div>
+
+        {/* ANSWER */}
+        {answer && (
+          <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-6 shadow-xl">
+            <h3 className="text-lg font-semibold text-green-400 mb-3">Answer</h3>
+            <p className="text-gray-300 leading-relaxed">{answer}</p>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   )
 }
