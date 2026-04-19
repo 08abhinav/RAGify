@@ -24,17 +24,11 @@ def register_routes(app):
             doc_id = str(uuid.uuid4())
             vectorstore = None
 
-            # Case 1: URL upload
-            if url:
-                vectorstore = process_web(url)
-                save_vectors(vectorstore, doc_id)
-                return JSONResponse(content={"message": "URL processed", "doc_id": doc_id})
-
-            # Case 2: File upload
+            # File upload
             if not file:
                 return JSONResponse(content={"error": "No file or URL provided"}, status_code=400)
 
-            # Case 3: Uploaded file exceeds 10MB limit
+            # Uploaded file exceeds 10MB limit
             validate_file_size(file)
 
             if file.filename.endswith(".pdf"):
