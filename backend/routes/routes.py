@@ -7,7 +7,6 @@ from fastapi.responses import JSONResponse
 from controllers.pdf_controller import process_pdf
 from controllers.csv_controller import process_csv
 from controllers.doc_controller import process_doc
-from controllers.web_controller import process_web
 from controllers.process_query import process_query
 from lib.state import save_vectors, load_vector
 from lib.validateFile import validate_file_size
