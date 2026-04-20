@@ -1,6 +1,6 @@
 import { Nav } from '@/components/Nav'
 import { Button } from "@/components/ui/button"
-import { FileText, Search, MessageSquare, ArrowRight, Sparkles } from "lucide-react"
+import { FileText, Search, MessageSquare, Sparkles } from "lucide-react"
 import { Link } from 'react-router-dom'
 import { steps } from '@/utils/Steps'
 
