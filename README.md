@@ -1,13 +1,13 @@
 # RAGify
 
 A lightweight Retrieval-Augmented Generation (RAG) built with **Python + FastAPI and React.js**.  
-It allows users to upload documents (PDF, DOCX, CSV, or Web URLs), store embeddings in a vector database, and ask natural-language questions over their own data.
+It allows users to upload documents (PDF, DOCX, CSV), store embeddings in a vector database, and ask natural-language questions over their own data.
 
 ---
 
 ## Backend Features
 
-- Upload documents (**PDF, DOCX, CSV**) or ingest content from **URLs**
+- Upload documents (**PDF, DOCX, CSV**)
 - Generate embeddings and store them in **ChromaDB**
 - Query documents using **local LLM (Ollama + TinyLlama)**
 - Support for **multiple documents** via unique `doc_id`
@@ -51,7 +51,6 @@ backend/
 │   ├── csv_controller.py
 │   ├── doc_controller.py
 │   ├── pdf_controller.py
-│   ├── web_controller.py
 │   └── process_query.py
 │
 ├── lib/
