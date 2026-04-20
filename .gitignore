@@ -9,3 +9,4 @@ venv/
 __pycache__/
 vector_dbs/
 node_modules/
+.dockerignore
