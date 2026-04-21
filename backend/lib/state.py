@@ -3,15 +3,15 @@ import chromadb
 from typing import List
 from dotenv import load_dotenv
 from langchain_core.documents import Document
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_ollama import OllamaEmbeddings
 
 load_dotenv() 
 
-embeddings = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-MiniLM-L6-v2"
-)
+embeddings = OllamaEmbeddings(model="nomic-embed-text")
 
-chroma_client = chromadb.HttpClient(host='localhost', port=8000)
+CHROMA_HOST = os.getenv("CHROMA_HOST")
+
+chroma_client = chromadb.HttpClient(host=CHROMA_HOST, port=8000)
 chroma_client.heartbeat()
 
 COLLECTION_NAME = os.getenv("CHROMA_COLLECTION")
