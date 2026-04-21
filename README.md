@@ -1,12 +1,11 @@
 # RAGify
 
-A lightweight Retrieval-Augmented Generation (RAG) built with **Python + FastAPI and React.js**.  
+A lightweight Retrieval-Augmented Generation (RAG) system built with **Python (FastAPI) + React.js**.  
 It allows users to upload documents (PDF, DOCX, CSV), store embeddings in a vector database, and ask natural-language questions over their own data.
 
 ---
 
 ## Backend Features
-
 - Upload documents (**PDF, DOCX, CSV**)
 - Generate embeddings and store them in **ChromaDB**
 - Query documents using **local LLM (Ollama + TinyLlama)**
@@ -16,25 +15,25 @@ It allows users to upload documents (PDF, DOCX, CSV), store embeddings in a vect
 - Fully **offline-capable** once models are installed
 
 ## Frontend Features
-
 - Ask natural-language questions over uploaded documents
 - Real-time answers powered by the RAG backend
-- Minimal, modern UI with clear information hierarchy
-- Fully decoupled from backend (API-driven)
-- Responsive design (desktop-first, mobile-friendly)
+- Minimal and clean UI
+- Fully decoupled (API-driven)
+- Responsive design (desktop-first)
+
 ---
 
 ## Tech Stack
 
-- **Language**: Python, Typescript
-- **Framework**: FastAPI, React
-- **RAG Framework**: LangChain
-- **Vector Database**: ChromaDB
-- **LLM Runtime**: Ollama (local)
-- **LLM Model**: TinyLlama
-- **Embedding Flow**: LangChain Embeddings + Chroma
-- **Styling**: Tailwindcss
-- **UI Componenets**: shadcn/ui
+- **Language**: Python, TypeScript  
+- **Framework**: FastAPI, React  
+- **RAG Framework**: LangChain  
+- **Vector Database**: ChromaDB  
+- **LLM Runtime**: Ollama  
+- **LLM Model**: TinyLlama  
+- **Embedding Model**: nomic-embed-text  
+- **Styling**: TailwindCSS  
+- **UI Components**: shadcn/ui  
 
 ---
 
@@ -70,6 +69,7 @@ frontend/
 │   │       └── input.tsx
 │   │
 │   ├── pages/
+|   |   ├── Docs.tsx
 |   |   ├── Explore.tsx
 │   │   ├── Home.tsx
 │   │   ├── Index.tsx
@@ -80,6 +80,8 @@ frontend/
 │   │   └── Steps.ts
 │   │
 │   ├── App.tsx
+│   ├── App.css
+│   ├── index.css
 │   └── main.tsx
 │
 ├── index.html
