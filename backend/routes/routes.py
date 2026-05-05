@@ -18,14 +18,14 @@ class AskRequest(BaseModel):
 
 def register_routes(app):
     @app.post("/api/upload")
-    async def upload_file(file: UploadFile = File(None), url: str = Form(None)):
+    async def upload_file(file: UploadFile = File(None)):
         try:
             doc_id = str(uuid.uuid4())
             vectorstore = None
 
             # File upload
             if not file:
-                return JSONResponse(content={"error": "No file or URL provided"}, status_code=400)
+                return JSONResponse(content={"error": "No file provided"}, status_code=400)
 
             # Uploaded file exceeds 10MB limit
             validate_file_size(file)
