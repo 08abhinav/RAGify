@@ -9,12 +9,12 @@ load_dotenv()
 
 embeddings = OllamaEmbeddings(model="nomic-embed-text")
 
-CHROMA_HOST = os.getenv("CHROMA_HOST")
+CHROMA_HOST = os.getenv("CHROMA_HOST", "localhost")
+COLLECTION_NAME = os.getenv("CHROMA_COLLECTION", "default_collection")
 
 chroma_client = chromadb.HttpClient(host=CHROMA_HOST, port=8000)
 chroma_client.heartbeat()
 
-COLLECTION_NAME = os.getenv("CHROMA_COLLECTION")
 
 collection = chroma_client.get_or_create_collection(
     name=COLLECTION_NAME,
